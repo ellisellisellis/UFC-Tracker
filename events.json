@@ -1,14 +1,212 @@
 [
-  {
-    "id": "ufc-sample-1",
-    "title": "UFC Main Event",
-    "date": "2026-06-01",
-    "type": "ppv"
-  },
-  {
-    "id": "ufc-sample-2",
-    "title": "UFC Fight Night",
-    "date": "2026-06-08",
-    "type": "fn"
-  }
+    {
+        "id": "ufc-sample-1",
+        "title": "UFC Main Event",
+        "date": "2026-06-01",
+        "type": "ppv"
+    },
+    {
+        "id": "ufc-sample-2",
+        "title": "UFC Fight Night",
+        "date": "2026-06-08",
+        "type": "fn"
+    },
+    {
+        "id": "espn-600059148",
+        "title": "UFC 329: McGregor vs. Holloway 2",
+        "date": "2026-07-11",
+        "type": "ppv"
+    },
+    {
+        "id": "espn-600059599",
+        "title": "UFC Fight Night: Du Plessis vs. Usman",
+        "date": "2026-07-18",
+        "type": "fn"
+    },
+    {
+        "id": "espn-600059667",
+        "title": "UFC Fight Night: Ankalaev vs. Guskov",
+        "date": "2026-07-25",
+        "type": "fn"
+    },
+    {
+        "id": "espn-600059339",
+        "title": "UFC Fight Night: Medi\u0107 vs. Rodriguez",
+        "date": "2026-08-01",
+        "type": "fn"
+    },
+    {
+        "id": "espn-600060621",
+        "title": "UFC Fight Night: Gamrot vs Salkilld",
+        "date": "2026-08-08",
+        "type": "fn"
+    },
+    {
+        "id": "espn-600060732",
+        "title": "Dana White's Contender Series: Season 10, Week 1",
+        "date": "2026-08-11",
+        "type": "fn"
+    },
+    {
+        "id": "espn-600059185",
+        "title": "UFC 330: Makhachev vs. Machado Garry",
+        "date": "2026-08-15",
+        "type": "ppv"
+    },
+    {
+        "id": "espn-600060733",
+        "title": "Dana White's Contender Series: Season 10, Week 2",
+        "date": "2026-08-18",
+        "type": "fn"
+    },
+    {
+        "id": "espn-600060493",
+        "title": "UFC Fight Night: Hernandez vs. Rodrigues",
+        "date": "2026-08-22",
+        "type": "fn"
+    },
+    {
+        "id": "espn-600060734",
+        "title": "Dana White's Contender Series: Season 10, Week 3",
+        "date": "2026-08-25",
+        "type": "fn"
+    },
+    {
+        "id": "espn-600060620",
+        "title": "UFC Fight Night: Nurmagomedov vs. Song",
+        "date": "2026-08-29",
+        "type": "fn"
+    },
+    {
+        "id": "espn-600060735",
+        "title": "Dana White's Contender Series: Season 10, Week 4",
+        "date": "2026-09-01",
+        "type": "fn"
+    },
+    {
+        "id": "espn-600059993",
+        "title": "UFC Fight Night: Hooker vs. Parnasse",
+        "date": "2026-09-05",
+        "type": "fn"
+    },
+    {
+        "id": "espn-600060736",
+        "title": "Dana White's Contender Series: Season 10, Week 5",
+        "date": "2026-09-08",
+        "type": "fn"
+    },
+    {
+        "id": "espn-600060772",
+        "title": "Noche UFC: Silva vs. Delgado",
+        "date": "2026-09-12",
+        "type": "fn"
+    },
+    {
+        "id": "espn-600060737",
+        "title": "Dana White's Contender Series: Season 10, Week 6",
+        "date": "2026-09-15",
+        "type": "fn"
+    },
+    {
+        "id": "espn-600060963",
+        "title": "UFC 331: Van vs. Pantoja 2",
+        "date": "2026-09-19",
+        "type": "ppv"
+    },
+    {
+        "id": "espn-600060738",
+        "title": "Dana White's Contender Series: Season 10, Week 7",
+        "date": "2026-09-22",
+        "type": "fn"
+    },
+    {
+        "id": "espn-600061266",
+        "title": "UFC Fight Night: Rosas Jr. vs. Barcelos",
+        "date": "2026-09-26",
+        "type": "fn"
+    },
+    {
+        "id": "espn-600060739",
+        "title": "Dana White's Contender Series: Season 10, Week 8",
+        "date": "2026-09-29",
+        "type": "fn"
+    },
+    {
+        "id": "espn-600061182",
+        "title": "UFC 332: Silva vs. Wang",
+        "date": "2026-10-03",
+        "type": "ppv"
+    },
+    {
+        "id": "espn-600060740",
+        "title": "Dana White's Contender Series: Season 10, Week 9",
+        "date": "2026-10-06",
+        "type": "fn"
+    },
+    {
+        "id": "espn-600061541",
+        "title": "UFC Fight Night: Allen vs. Duncan",
+        "date": "2026-10-10",
+        "type": "fn"
+    },
+    {
+        "id": "espn-600060741",
+        "title": "Dana White's Contender Series: Season 10, Week 10",
+        "date": "2026-10-13",
+        "type": "fn"
+    },
+    {
+        "id": "espn-600060773",
+        "title": "UFC Fight Night: Buckley vs. Malott",
+        "date": "2026-10-17",
+        "type": "fn"
+    },
+    {
+        "id": "espn-600061267",
+        "title": "UFC 333: Volkanovski vs. Evloev",
+        "date": "2026-10-24",
+        "type": "ppv"
+    },
+    {
+        "id": "espn-600061420",
+        "title": "UFC Fight Night: Moicano vs. Nolan",
+        "date": "2026-10-31",
+        "type": "fn"
+    },
+    {
+        "id": "espn-600061268",
+        "title": "UFC Fight Night: Bonfim vs. Brady",
+        "date": "2026-11-07",
+        "type": "fn"
+    },
+    {
+        "id": "espn-600061400",
+        "title": "UFC 334: Gane vs. Hokit",
+        "date": "2026-11-14",
+        "type": "ppv"
+    },
+    {
+        "id": "espn-600061665",
+        "title": "UFC Fight Night: Proch\u00e1zka vs. Stirling",
+        "date": "2026-11-21",
+        "type": "fn"
+    },
+    {
+        "id": "espn-600061401",
+        "title": "UFC 335: Oliveira vs. Lopes",
+        "date": "2026-12-12",
+        "type": "ppv"
+    },
+    {
+        "id": "espn-600062421",
+        "title": "UFC Fight Night: Dallas",
+        "date": "2027-01-16",
+        "type": "fn"
+    },
+    {
+        "id": "espn-600062191",
+        "title": "UFC 336: Van vs. Kape",
+        "date": "2027-01-30",
+        "type": "ppv"
+    }
 ]
