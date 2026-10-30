@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UFC Spoiler-Free Catch-Up Tracker</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        octagon: {
+                            900: '#0B0F19',
+                            800: '#111827',
+                            700: '#1F2937',
+                            600: '#374151',
+                            accent: '#DC2626', // UFC Red
+                            gold: '#F59E0B'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-octagon-900 text-gray-100 min-h-screen font-sans selection:bg-octagon-accent selection:text-white">
+
+    <!-- Top Header Bar -->
+    <header class="bg-octagon-800 border-b border-octagon-700 sticky top-0 z-30 shadow-md">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-octagon-accent text-white p-2.5 rounded-xl font-black text-xl tracking-wider shadow-lg flex items-center justify-center w-12 h-12">
+                    UFC
+                </div>
+                <div>
+                    <h1 class="text-xl font-black tracking-wide uppercase text-white flex items-center gap-2">
+                        Catch-Up Tracker <span class="text-xs bg-octagon-700 text-gray-300 px-2 py-0.5 rounded-full border border-octagon-600">Spoiler-Free</span>
+                    </h1>
+                    <p class="text-xs text-gray-400">Watch at your own pace without results ruined.</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                <button onclick="openAddModal()" class="bg-octagon-700 hover:bg-octagon-600 text-gray-200 px-3 py-2 rounded-lg text-xs font-semibold border border-octagon-600 transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-plus text-octagon-accent"></i> Add Event
+                </button>
+                <button onclick="exportData()" class="bg-octagon-700 hover:bg-octagon-600 text-gray-200 px-3 py-2 rounded-lg text-xs font-semibold border border-octagon-600 transition flex items-center gap-1.5" title="Export Backup">
+                    <i class="fa-solid fa-download"></i> Export
+                </button>
+                <label class="bg-octagon-700 hover:bg-octagon-600 text-gray-200 px-3 py-2 rounded-lg text-xs font-semibold border border-octagon-600 transition flex items-center gap-1.5 cursor-pointer" title="Import Backup">
+                    <i class="fa-solid fa-upload"></i> Import
+                    <input type="file" id="importFile" class="hidden" onchange="importData(event)">
+                </label>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-4xl mx-auto px-4 py-6 space-y-6">
+
+        <!-- Dashboard Progress Banner -->
+        <section class="bg-gradient-to-br from-octagon-800 to-octagon-700 border border-octagon-600 rounded-2xl p-5 shadow-xl relative overflow-hidden">
+            <div class="absolute -right-6 -bottom-6 text-octagon-700 opacity-20 pointer-events-none text-9xl font-black">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 relative z-10">
+                <div class="bg-octagon-900/60 p-4 rounded-xl border border-octagon-700/50 backdrop-blur-sm">
+                    <span class="text-xs text-gray-400 uppercase font-bold tracking-wider block mb-1">Events Behind</span>
+                    <span id="stat-behind" class="text-3xl font-black text-octagon-accent">0</span>
+                    <span class="text-xs text-gray-400 ml-1">to watch</span>
+                </div>
+                <div class="bg-octagon-900/60 p-4 rounded-xl border border-octagon-700/50 backdrop-blur-sm">
+                    <span class="text-xs text-gray-400 uppercase font-bold tracking-wider block mb-1">Watched Events</span>
+                    <span id="stat-watched" class="text-3xl font-black text-emerald-400">0</span>
+                    <span class="text-xs text-gray-400 ml-1">completed</span>
+                </div>
+                <div class="bg-octagon-900/60 p-4 rounded-xl border border-octagon-700/50 backdrop-blur-sm">
+                    <span class="text-xs text-gray-400 uppercase font-bold tracking-wider block mb-1">Total Schedule</span>
+                    <span id="stat-total" class="text-3xl font-black text-white">0</span>
+                    <span class="text-xs text-gray-400 ml-1">events loaded</span>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="space-y-2 relative z-10">
+                <div class="flex justify-between text-xs font-semibold text-gray-300">
+                    <span>Overall Catch-Up Progress</span>
+                    <span id="progress-percent">0%</span>
+                </div>
+                <div class="w-full bg-octagon-900 h-3 rounded-full overflow-hidden p-0.5 border border-octagon-700">
+                    <div id="progress-bar" class="bg-gradient-to-r from-red-600 to-emerald-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Watch Next Focus Card -->
+        <section id="next-up-section" class="bg-octagon-800 border-2 border-octagon-accent/50 rounded-2xl p-5 shadow-lg hidden">
+            <div class="flex items-center justify-between mb-3">
+                <span class="bg-octagon-accent/20 text-octagon-accent border border-octagon-accent/30 text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider flex items-center gap-1.5">
+                    <i class="fa-solid fa-play"></i> Watch Next
+                </span>
+                <span id="next-date" class="text-xs text-gray-400"></span>
+            </div>
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div>
+                    <h2 id="next-title" class="text-xl font-bold text-white">Loading next event...</h2>
+                    <p class="text-xs text-gray-400 mt-0.5">Check this off once you have finished watching it on catch up!</p>
+                </div>
+                <button id="next-action-btn" onclick="" class="w-full sm:w-auto bg-octagon-accent hover:bg-red-700 text-white font-bold px-6 py-2.5 rounded-xl transition shadow-lg text-sm flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-check"></i> Mark Watched
+                </button>
+            </div>
+        </section>
+
+        <!-- Filter Controls -->
+        <section class="flex flex-col sm:flex-row justify-between items-center gap-4 bg-octagon-800 p-4 rounded-2xl border border-octagon-700">
+            <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+                <button onclick="setFilter('all')" id="filter-all" class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-bold transition bg-octagon-accent text-white">All</button>
+                <button onclick="setFilter('unwatched')" id="filter-unwatched" class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-bold transition bg-octagon-700 text-gray-300 hover:bg-octagon-600">Unwatched</button>
+                <button onclick="setFilter('watched')" id="filter-watched" class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-bold transition bg-octagon-700 text-gray-300 hover:bg-octagon-600">Watched</button>
+                <button onclick="setFilter('ppv')" id="filter-ppv" class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-bold transition bg-octagon-700 text-gray-300 hover:bg-octagon-600">PPV Only</button>
+                <button onclick="setFilter('fn')" id="filter-fn" class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-bold transition bg-octagon-700 text-gray-300 hover:bg-octagon-600">Fight Nights</button>
+            </div>
+            <div class="flex items-center gap-2 w-full sm:w-auto">
+                <select id="sort-order" onchange="changeSort(this.value)" class="bg-octagon-900 border border-octagon-700 text-gray-200 text-xs rounded-lg px-3 py-2 outline-none focus:border-octagon-accent w-full sm:w-auto">
+                    <option value="asc">Chronological (Oldest First)</option>
+                    <option value="desc">Recent First</option>
+                </select>
+            </div>
+        </section>
+
+        <!-- Events List -->
+        <section class="space-y-3" id="events-container">
+            <!-- Dynamically populated -->
+        </section>
+
+    </main>
+
+    <!-- Add Event Modal -->
+    <div id="add-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-octagon-800 border border-octagon-700 rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-calendar-plus text-octagon-accent"></i> Add Custom UFC Event
+                </h3>
+                <button onclick="closeAddModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form onsubmit="handleCustomEventAdd(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-300 uppercase mb-1">Event Title</label>
+                    <input type="text" id="custom-title" required placeholder="e.g. UFC Main Event" class="w-full bg-octagon-900 border border-octagon-700 rounded-xl px-3 py-2.5 text-sm text-white focus:border-octagon-accent outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-300 uppercase mb-1">Event Date</label>
+                    <input type="date" id="custom-date" required class="w-full bg-octagon-900 border border-octagon-700 rounded-xl px-3 py-2.5 text-sm text-white focus:border-octagon-accent outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-300 uppercase mb-1">Event Type</label>
+                    <select id="custom-type" class="w-full bg-octagon-900 border border-octagon-700 rounded-xl px-3 py-2.5 text-sm text-white focus:border-octagon-accent outline-none">
+                        <option value="ppv">PPV Main Event</option>
+                        <option value="fn">Fight Night</option>
+                    </select>
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeAddModal()" class="bg-octagon-700 hover:bg-octagon-600 text-gray-300 px-4 py-2 rounded-xl text-xs font-bold">Cancel</button>
+                    <button type="submit" class="bg-octagon-accent hover:bg-red-700 text-white px-5 py-2 rounded-xl text-xs font-bold shadow-lg">Save Event</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- App Logic Script -->
+    <script>
+        let EVENTS = [];
+        let watchedStatus = JSON.parse(localStorage.getItem('ufc_watched_events')) || {};
+        let customEvents = JSON.parse(localStorage.getItem('ufc_custom_events')) || [];
+        let currentFilter = 'all';
+        let currentSort = 'asc';
+
+        async function loadEventsData() {
+            try {
+                const res = await fetch('events.json?' + new Date().getTime());
+                if (!res.ok) throw new Error('Failed to load events.json');
+                const baseEvents = await res.json();
+                EVENTS = [...baseEvents, ...customEvents];
+            } catch (err) {
+                console.warn('Using fallback data schedule', err);
+                EVENTS = [
+                    { id: "ufc-sample-1", title: "UFC Main Event", date: "2026-06-01", type: "ppv" },
+                    { id: "ufc-sample-2", title: "UFC Fight Night", date: "2026-06-08", type: "fn" }
+                , ...customEvents];
+            }
+            renderApp();
+        }
+
+        function toggleWatch(id) {
+            watchedStatus[id] = !watchedStatus[id];
+            localStorage.setItem('ufc_watched_events', JSON.stringify(watchedStatus));
+            renderApp();
+        }
+
+        function setFilter(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.className = "filter-btn px-3.5 py-1.5 rounded-lg text-xs font-bold transition bg-octagon-700 text-gray-300 hover:bg-octagon-600";
+            });
+            document.getElementById(`filter-${filter}`).className = "filter-btn px-3.5 py-1.5 rounded-lg text-xs font-bold transition bg-octagon-accent text-white";
+            renderApp();
+        }
+
+        function changeSort(val) {
+            currentSort = val;
+            renderApp();
+        }
+
+        function renderApp() {
+            let sorted = [...EVENTS].sort((a, b) => {
+                const dateA = new Date(a.date);
+                const dateB = new Date(b.date);
+                return currentSort === 'asc' ? dateA - dateB : dateB - dateA;
+            });
+
+            let filtered = sorted.filter(ev => {
+                const isWatched = !!watchedStatus[ev.id];
+                if (currentFilter === 'unwatched') return !isWatched;
+                if (currentFilter === 'watched') return isWatched;
+                if (currentFilter === 'ppv') return ev.type === 'ppv';
+                if (currentFilter === 'fn') return ev.type === 'fn';
+                return true;
+            });
+
+            const total = EVENTS.length;
+            const watchedCount = EVENTS.filter(ev => watchedStatus[ev.id]).length;
+            const behindCount = total - watchedCount;
+            const percent = total > 0 ? Math.round((watchedCount / total) * 100) : 0;
+
+            document.getElementById('stat-total').innerText = total;
+            document.getElementById('stat-watched').innerText = watchedCount;
+            document.getElementById('stat-behind').innerText = behindCount;
+            document.getElementById('progress-percent').innerText = percent + '%';
+            document.getElementById('progress-bar').style.width = percent + '%';
+
+            const chronologicalSorted = [...EVENTS].sort((a, b) => new Date(a.date) - new Date(b.date));
+            const nextUnwatched = chronologicalSorted.find(ev => !watchedStatus[ev.id]);
+            const nextSection = document.getElementById('next-up-section');
+
+            if (nextUnwatched) {
+                nextSection.classList.remove('hidden');
+                document.getElementById('next-title').innerText = nextUnwatched.title;
+                document.getElementById('next-date').innerText = `Scheduled: ${nextUnwatched.date}`;
+                document.getElementById('next-action-btn').setAttribute('onclick', `toggleWatch('${nextUnwatched.id}')`);
+            } else {
+                nextSection.classList.add('hidden');
+            }
+
+            const container = document.getElementById('events-container');
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 bg-octagon-800 rounded-2xl border border-octagon-700">
+                        <i class="fa-solid fa-face-smile text-4xl text-gray-500 mb-2"></i>
+                        <p class="text-gray-400 text-sm">No events found matching this filter.</p>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = filtered.map(ev => {
+                const isWatched = !!watchedStatus[ev.id];
+                const typeBadge = ev.type === 'ppv' 
+                    ? '<span class="bg-amber-500/20 text-amber-400 border border-amber-500/30 text-[10px] px-2 py-0.5 rounded uppercase font-extrabold tracking-wider">PPV Main Event</span>'
+                    : '<span class="bg-blue-500/20 text-blue-400 border border-blue-500/30 text-[10px] px-2 py-0.5 rounded uppercase font-extrabold tracking-wider">Fight Night</span>';
+
+                return `
+                    <div class="bg-octagon-800 border ${isWatched ? 'border-octagon-700/60 opacity-75' : 'border-octagon-700'} rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 transition hover:border-octagon-600 shadow-md">
+                        <div class="flex items-center gap-4">
+                            <button onclick="toggleWatch('${ev.id}')" class="w-10 h-10 rounded-xl flex items-center justify-center border transition ${isWatched ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40' : 'bg-octagon-900 text-gray-500 border-octagon-700 hover:border-gray-500'}">
+                                <i class="fa-solid fa-check text-lg ${isWatched ? 'opacity-100' : 'opacity-30'}"></i>
+                            </button>
+                            <div>
+                                <div class="flex items-center gap-2 mb-1">
+                                    ${typeBadge}
+                                    <span class="text-xs text-gray-400 flex items-center gap-1"><i class="fa-regular fa-calendar"></i> ${ev.date}</span>
+                                </div>
+                                <h3 class="text-base font-bold ${isWatched ? 'text-gray-400 line-through' : 'text-white'}">${ev.title}</h3>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                            <span class="text-xs font-semibold px-3 py-1 rounded-full ${isWatched ? 'bg-emerald-500/10 text-emerald-400' : 'bg-octagon-accent/10 text-octagon-accent'}">
+                                ${isWatched ? 'Watched' : 'Unwatched'}
+                            </span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openAddModal() { document.getElementById('add-modal').classList.remove('hidden'); }
+        function closeAddModal() { document.getElementById('add-modal').classList.add('hidden'); }
+
+        function handleCustomEventAdd(e) {
+            e.preventDefault();
+            const title = document.getElementById('custom-title').value;
+            const date = document.getElementById('custom-date').value;
+            const type = document.getElementById('custom-type').value;
+            const id = 'custom-' + Date.now();
+
+            const newEv = { id, title, date, type };
+            customEvents.push(newEv);
+            localStorage.setItem('ufc_custom_events', JSON.stringify(customEvents));
+            
+            EVENTS.push(newEv);
+            closeAddModal();
+            renderApp();
+            e.target.reset();
+        }
+
+        function exportData() {
+            const data = { watchedStatus, customEvents };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'ufc-tracker-backup.json';
+            a.click();
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = func
