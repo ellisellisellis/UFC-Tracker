@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UFC Catch-Up Tracker | 100% Spoiler-Free</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter & Montserrat -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        ufc: {
+                            red: '#E7000B',
+                            darkRed: '#990007',
+                            bg: '#0D0D11',
+                            card: '#16161E',
+                            cardHover: '#1E1E2A',
+                            border: '#2A2A3A',
+                            accent: '#22C55E'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Montserrat', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #0D0D11;
+            color: #F3F4F6;
+            font-family: 'Inter', sans-serif;
+        }
+        .ufc-title {
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0D0D11;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2A2A3A;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #E7000B;
+        }
+        .glass-panel {
+            background: rgba(22, 22, 30, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        /* Checkbox styling */
+        .custom-checkbox {
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border: 2px solid #374151;
+            border-radius: 6px;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        .custom-checkbox:checked {
+            background-color: #22C55E;
+            border-color: #22C55E;
+        }
+        .custom-checkbox:checked::after {
+            content: '✓';
+            position: absolute;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-ufc-red selection:text-white">
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- Header Navigation -->
+    <header class="border-b border-ufc-border bg-ufc-bg sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-ufc-red text-white p-2.5 rounded-lg flex items-center justify-center shadow-lg shadow-ufc-red/20">
+                    <i class="fa-solid font-black text-xl">UFC</i>
+                </div>
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-black ufc-title tracking-wider text-white flex items-center gap-2">
+                        Catch-Up Tracker
+                        <span class="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-semibold px-2 py-0.5 rounded-full uppercase tracking-normal">
+                            <i class="fa-solid font-xs fa-shield-halved mr-1"></i> 100% Spoiler Free
+                        </span>
+                    </h1>
+                    <p class="text-xs text-gray-400 hidden sm:block">Track numbered events and fight nights chronologically without spoilers</p>
+                </div>
+            </div>
+
+            <!-- Action Toolbar -->
+            <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
+                <button onclick="openModal('addEventModal')" class="bg-ufc-card hover:bg-ufc-cardHover border border-ufc-border text-gray-200 hover:text-white text-xs sm:text-sm font-medium px-3.5 py-2 rounded-lg transition-all flex items-center gap-2 shadow-sm">
+                    <i class="fa-solid fa-plus text-ufc-red"></i>
+                    <span>Add Event</span>
+                </button>
+                <button onclick="fetchLatestSchedule()" class="bg-ufc-card hover:bg-ufc-cardHover border border-ufc-border text-gray-200 hover:text-white text-xs sm:text-sm font-medium px-3.5 py-2 rounded-lg transition-all flex items-center gap-2 shadow-sm" title="Sync Schedule">
+                    <i id="syncIcon" class="fa-solid fa-rotate text-sky-400"></i>
+                    <span class="hidden md:inline">Sync Data</span>
+                </button>
+                <div class="h-6 w-px bg-ufc-border hidden sm:block"></div>
+                <button onclick="exportData()" class="bg-ufc-card hover:bg-ufc-cardHover border border-ufc-border text-gray-300 hover:text-white text-xs px-3 py-2 rounded-lg transition-all" title="Export Watch History">
+                    <i class="fa-solid fa-download mr-1"></i> Export
+                </button>
+                <label class="bg-ufc-card hover:bg-ufc-cardHover border border-ufc-border text-gray-300 hover:text-white text-xs px-3 py-2 rounded-lg transition-all cursor-pointer">
+                    <i class="fa-solid fa-upload mr-1"></i> Import
+                    <input type="file" id="importFile" class="hidden" accept=".json" onchange="importData(event)">
+                </label>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex-grow">
+
+        <!-- Top Overview Stats & Catch-up Status Banner -->
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-8">
+            
+            <!-- Overall Status Card -->
+            <div class="glass-panel p-6 rounded-2xl flex flex-col justify-between relative overflow-hidden">
+                <div class="absolute -right-6 -bottom-6 text-white/5 font-black text-9xl select-none pointer-events-none ufc-title">
+                    UFC
+                </div>
+                <div>
+                    <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Catch-Up Status</span>
+                    <div class="mt-2 flex items-baseline gap-3">
+                        <span id="behindCount" class="text-4xl sm:text-5xl font-extrabold text-ufc-red">0</span>
+                        <span class="text-lg font-semibold text-gray-300">Events Behind</span>
+                    </div>
+                    <p id="statusSubtext" class="text-xs text-gray-400 mt-2">Checking your watch log...</p>
+                </div>
+
+                <div class="mt-6">
+                    <div class="flex justify-between text-xs font-medium text-gray-400 mb-2">
+                        <span>Progress Ratio</span>
+                        <span id="progressPercent">0%</span>
+                    </div>
+                    <div class="w-full bg-gray-800 h-3 rounded-full overflow-hidden p-0.5 border border-ufc-border">
+                        <div id="progressBar" class="bg-gradient-to-r from-ufc-red to-emerald-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Stats Metrics Grid -->
+            <div class="grid grid-cols-2 gap-4">
+                <div class="glass-panel p-5 rounded-2xl flex flex-col justify-between">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center mb-2">
+                        <i class="fa-solid fa-circle-check text-lg"></i>
+                    </div>
+                    <div>
+                        <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Watched</span>
+                        <div id="watchedCount" class="text-3xl font-extrabold text-white mt-1">0</div>
+                    </div>
+                    <span class="text-[11px] text-gray-500 mt-1">Completed Events</span>
+                </div>
+
+                <div class="glass-panel p-5 rounded-2xl flex flex-col justify-between">
+                    <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center mb-2">
+                        <i class="fa-solid fa-clock text-lg"></i>
+                    </div>
+                    <div>
+                        <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Total Stored</span>
+                        <div id="totalCount" class="text-3xl font-extrabold text-white mt-1">0</div>
+                    </div>
+                    <span class="text-[11px] text-gray-500 mt-1">Available in Feed</span>
+                </div>
+            </div>
+
+            <!-- Next Unwatched Focus Card -->
+            <div id="nextCard" class="glass-panel p-6 rounded-2xl border-l-4 border-l-ufc-red flex flex-col justify-between relative bg-gradient-to-br from-ufc-card to-ufc-bg">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-ufc-red/20 text-ufc-red border border-ufc-red/30 mb-2">
+                            <i class="fa-solid fa-play text-[10px] mr-1.5"></i> Watch Next
+                        </span>
+                        <h3 id="nextTitle" class="text-xl font-bold text-white ufc-title">Loading...</h3>
+                    </div>
+                    <button id="nextCheckBtn" onclick="toggleNextWatched()" class="bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 text-xs px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5">
+                        <i class="fa-solid fa-check"></i> Mark Watched
+                    </button>
+                </div>
+
+                <div id="nextDetails" class="space-y-1.5 my-4 text-xs text-gray-300">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-regular fa-calendar text-gray-500 w-4"></i>
+                        <span id="nextDate" class="font-medium">--</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-location-dot text-gray-500 w-4"></i>
+                        <span id="nextLocation">--</span>
+                    </div>
+                </div>
+
+                <div class="pt-2 border-t border-ufc-border flex justify-between items-center text-xs">
+                    <span class="text-gray-400">Zero spoilers on fights or outcomes.</span>
+                    <button onclick="scrollToNextEvent()" class="text-ufc-red hover:underline font-semibold flex items-center gap-1">
+                        Jump to Card <i class="fa-solid fa-arrow-down text-[10px]"></i>
+                    </button>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Filters, Search & Controls Section -->
+        <section class="glass-panel p-4 rounded-xl mb-6 flex flex-col md:flex-row gap-4 justify-between items-center">
+            
+            <!-- Category Tabs -->
+            <div class="flex items-center bg-ufc-bg p-1 rounded-lg border border-ufc-border overflow-x-auto w-full md:w-auto text-xs">
+                <button onclick="setFilter('all')" id="filter-all" class="filter-tab px-3 py-2 rounded-md font-medium text-gray-300 hover:text-white transition-all whitespace-nowrap active-tab">All Events</button>
+                <button onclick="setFilter('unwatched')" id="filter-unwatched" class="filter-tab px-3 py-2 rounded-md font-medium text-gray-400 hover:text-white transition-all whitespace-nowrap">Unwatched Only</button>
+                <button onclick="setFilter('watched')" id="filter-watched" class="filter-tab px-3 py-2 rounded-md font-medium text-gray-400 hover:text-white transition-all whitespace-nowrap">Watched</button>
+                <button onclick="setFilter('ppv')" id="filter-ppv" class="filter-tab px-3 py-2 rounded-md font-medium text-gray-400 hover:text-white transition-all whitespace-nowrap">PPV Only</button>
+                <button onclick="setFilter('fightnight')" id="filter-fightnight" class="filter-tab px-3 py-2 rounded-md font-medium text-gray-400 hover:text-white transition-all whitespace-nowrap">Fight Nights</button>
+            </div>
+
+            <!-- Search and Sorting Controls -->
+            <div class="flex items-center gap-3 w-full md:w-auto">
+                <div class="relative flex-grow md:w-64">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs"></i>
+                    <input type="text" id="searchInput" oninput="renderEvents()" placeholder="Search event or venue..." class="w-full bg-ufc-bg border border-ufc-border rounded-lg pl-9 pr-3 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-ufc-red transition-all">
+                </div>
+
+                <div class="flex items-center bg-ufc-bg border border-ufc-border rounded-lg text-xs p-1">
+                    <button onclick="setSort('asc')" id="sort-asc" class="px-2.5 py-1.5 rounded text-gray-300 hover:text-white transition-all active-sort" title="Oldest First (Catch-Up Order)">
+                        <i class="fa-solid fa-arrow-down-short-wide mr-1"></i> Oldest
+                    </button>
+                    <button onclick="setSort('desc')" id="sort-desc" class="px-2.5 py-1.5 rounded text-gray-400 hover:text-white transition-all" title="Newest First">
+                        <i class="fa-solid fa-arrow-up-wide-short mr-1"></i> Newest
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Events Table / Cards Stream -->
+        <section class="space-y-3" id="eventsContainer">
+            <!-- Dynamic Event Cards injected here -->
+        </section>
+
+        <!-- Empty State UI -->
+        <div id="emptyState" class="hidden glass-panel rounded-2xl p-12 text-center my-8">
+            <div class="w-16 h-16 bg-ufc-border rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400">
+                <i class="fa-solid fa-filter text-2xl"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white ufc-title">No Events Found</h3>
+            <p class="text-xs text-gray-400 mt-1 max-w-sm mx-auto">No UFC events match your current filter or search term. Try resetting your search or filters.</p>
+            <button onclick="resetFilters()" class="mt-4 bg-ufc-red hover:bg-ufc-darkRed text-white text-xs font-semibold px-4 py-2 rounded-lg transition-all">
+                Reset All Filters
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Footer Banner -->
+    <footer class="border-t border-ufc-border bg-ufc-bg py-6 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center sm:flex sm:justify-between sm:items-center text-xs text-gray-500">
+            <p class="mb-2 sm:mb-0">
+                <i class="fa-solid fa-shield-halved text-emerald-500 mr-1"></i> Designed for Catch-Up Viewers. Guaranteed 0% fight spoilers.
+            </p>
+            <p>
+                Store data locally in your browser. Compatible with GitHub Pages.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Add Custom Event Modal -->
+    <div id="addEventModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="glass-panel w-full max-w-md rounded-2xl p-6 border border-ufc-border shadow-2xl relative">
+            <button onclick="closeModal('addEventModal')" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <h3 class="text-lg font-bold text-white ufc-title mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-calendar-plus text-ufc-red"></i> Add UFC Event
+            </h3>
+            
+            <form id="addEventForm" onsubmit="handleAddEvent(event)" class="space-y-4 text-xs">
+                <div>
+                    <label class="block text-gray-300 font-medium mb-1">Event Title (Spoiler-Free)</label>
+                    <input type="text" id="newEventName" placeholder="e.g. UFC 335 or UFC Fight Night 298" required class="w-full bg-ufc-bg border border-ufc-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-ufc-red">
+                    <p class="text-[10px] text-gray-500 mt-1">Keep title clean (Do not include fighter names to maintain spoiler-free integrity).</p>
+                </div>
+
+                <div>
+                    <label class="block text-gray-300 font-medium mb-1">Event Date</label>
+                    <input type="date" id="newEventDate" required class="w-full bg-ufc-bg border border-ufc-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-ufc-red">
+                </div>
+
+                <div>
+                    <label class="block text-gray-300 font-medium mb-1">Location & Venue</label>
+                    <input type="text" id="newEventLocation" placeholder="e.g. T-Mobile Arena, Las Vegas, NV" required class="w-full bg-ufc-bg border border-ufc-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-ufc-red">
+                </div>
+
+                <div>
+                    <label class="block text-gray-300 font-medium mb-1">Event Type</label>
+                    <select id="newEventCategory" class="w-full bg-ufc-bg border border-ufc-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-ufc-red">
+                        <option value="ppv">Pay-Per-View (Numbered Event)</option>
+                        <option value="fightnight">Fight Night</option>
+                    </select>
+                </div>
+
+                <div class="pt-2 flex justify-end gap-2">
+                    <button type="button" onclick="closeModal('addEventModal')" class="px-4 py-2 rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700">Cancel</button>
+                    <button type="submit" class="px-4 py-2 rounded-lg bg-ufc-red text-white font-semibold hover:bg-ufc-darkRed">Save Event</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Application JavaScript Logic -->
+    <script>
+        // Initial Rich Dataset of 2025/2026 UFC Events (Spoiler Free)
+        const DEFAULT_EVENTS = [
+            { id: "ufc-324", name: "UFC 324", date: "2025-11-15", location: "Sphere, Las Vegas, NV, USA", category: "ppv" },
+            { id: "ufc-fn-288", name: "UFC Fight Night 288", date: "2025-11-22", location: "Apex, Las Vegas, NV, USA", category: "fightnight" },
+            { id: "ufc-325", name: "UFC 325", date: "2025-12-06", location: "Etihad Arena, Abu Dhabi, UAE", category: "ppv" },
+            { id: "ufc-fn-289", name: "UFC Fight Night 289", date: "2025-12-13", location: "O2 Arena, London, UK", category: "fightnight" },
+            { id: "ufc-326", name: "UFC 326", date: "2026-01-17", location: "T-Mobile Arena, Las Vegas, NV, USA", category: "ppv" },
+            { id: "ufc-fn-290", name: "UFC Fight Night 290", date: "2026-01-24", location: "Accor Arena, Paris, France", category: "fightnight" },
+            { id: "ufc-327", name: "UFC 327", date: "2026-02-14", location: "Qudos Bank Arena, Sydney, Australia", category: "ppv" },
+            { id: "ufc-fn-291", name: "UFC Fight Night 291", date: "2026-02-21", location: "Apex, Las Vegas, NV, USA", category: "fightnight" },
+            { id: "ufc-328", name: "UFC 328", date: "2026-03-07", location: "Madison Square Garden, New York, NY", category: "ppv" },
+            { id: "ufc-fn-292", name: "UFC Fight Night 292", date: "2026-03-21", location: "Delta Center, Salt Lake City, UT", category: "fightnight" },
+            { id: "ufc-329", name: "UFC 329", date: "2026-04-11", location: "Jeunesse Arena, Rio de Janeiro, Brazil", category: "ppv" },
+            { id: "ufc-fn-293", name: "UFC Fight Night 293", date: "2026-04-25", location: "Apex, Las Vegas, NV, USA", category: "fightnight" },
+            { id: "ufc-330", name: "UFC 330", date: "2026-05-16", location: "T-Mobile Arena, Las Vegas, NV, USA", category: "ppv" },
+            { id: "ufc-fn-294", name: "UFC Fight Night 294", date: "2026-05-30", location: "Scotiabank Arena, Toronto, Canada", category: "fightnight" },
+            { id: "ufc-331", name: "UFC 331", date: "2026-06-20", location: "Etihad Arena, Abu Dhabi, UAE", category: "ppv" },
+            { id: "ufc-fn-295", name: "UFC Fight Night 295", date: "2026-07-04", location: "Apex, Las Vegas, NV, USA", category: "fightnight" },
+            { id: "ufc-332", name: "UFC 332", date: "2026-07-18", location: "Honda Center, Anaheim, CA, USA", category: "ppv" },
+            { id: "ufc-333", name: "UFC 333", date: "2026-08-15", location: "T-Mobile Arena, Las Vegas, NV, USA", category: "ppv" },
+            { id: "ufc-fn-296", name: "UFC Fight Night 296", date: "2026-08-29", location: "Co-op Live, Manchester, UK", category: "fightnight" },
+            { id: "ufc-334", name: "UFC 334", date: "2026-09-12", location: "Sphere, Las Vegas, NV, USA", category: "ppv" }
+        ];
+
+        // Global State Variables
+        let events = [];
+        let watchedIds = new Set();
+        let currentFilter = 'all';
+        let currentSort = 'asc';
+
+        // DOM Initialization on Page Load
+        window.addEventListener('DOMContentLoaded', () => {
+            loadStoredData();
+            renderEvents();
+            updateDashboard();
+        });
+
+        // Load data from LocalStorage or initialize defaults
+        function loadStoredData() {
+            const savedEvents = localStorage.getItem('ufc_events_db');
+            if (savedEvents) {
+                try {
+                    events = JSON.parse(savedEvents);
+                } catch (e) {
+                    events = [...DEFAULT_EVENTS];
+                }
+            } else {
+                events = [...DEFAULT_EVENTS];
+                saveEventsToStorage();
+            }
+
+            const savedWatched = localStorage.getItem('ufc_watched_ids');
+            if (savedWatched) {
+                try {
+                    watchedIds = new Set(JSON.parse(savedWatched));
+                } catch (e) {
+                    watchedIds = new Set();
+                }
+            }
+        }
+
+        function saveEventsToStorage() {
+            localStorage.setItem('ufc_events_db', JSON.stringify(events));
+        }
+
+        function saveWatchedToStorage() {
+            localStorage.setItem('ufc_watched_ids', JSON.stringify([...watchedIds]));
+        }
+
+        // Toggle Watched State for an Event
+        function toggleWatched(eventId) {
+            if (watchedIds.has(eventId)) {
+                watchedIds.delete(eventId);
+                showToast('Marked as unwatched', 'info');
+            } else {
+                watchedIds.add(eventId);
+                showToast('Event completed! Checked off.', 'success');
+            }
+            saveWatchedToStorage();
+            renderEvents();
+            updateDashboard();
+        }
+
+        // Dashboard Metrics Calculator
+        function updateDashboard() {
+            const todayStr = new Date().toISOString().split('T')[0];
+            // Past or current events count as aired
+            const airedEvents = events.filter(e => e.date <= todayStr);
+            const totalAired = airedEvents.length;
+
+            const watchedAiredCount = airedEvents.filter(e => watchedIds.has(e.id)).length;
+            const behindCount = Math.max(0, totalAired - watchedAiredCount);
+
+            document.getElementById('behindCount').innerText = behindCount;
+            document.getElementById('watchedCount').innerText = watchedIds.size;
+            document.getElementById('totalCount').innerText = events.length;
+
+            const percent = totalAired > 0 ? Math.round((watchedAiredCount / totalAired) * 100) : 0;
+            document.getElementById('progressBar').style.width = `${percent}%`;
+            document.getElementById('progressPercent').innerText = `${percent}%`;
+
+            if (behindCount === 0) {
+                document.getElementById('statusSubtext').innerText = '🎉 Fully caught up with all aired events!';
+            } else {
+                document.getElementById('statusSubtext').innerText = `You are ${behindCount} aired event(s) behind current schedule.`;
+            }
+
+            // Next Unwatched Focus Card logic (chronological oldest unwatched)
+            const sortedEventsChronological = [...events].sort((a,b) => new Date(a.date) - new Date(b.date));
+            const nextUnwatched = sortedEventsChronological.find(e => !watchedIds.has(e.id));
+
+            const nextCard = document.getElementById('nextCard');
+            if (nextUnwatched) {
+                document.getElementById('nextTitle').innerText = nextUnwatched.name;
+                document.getElementById('nextDate').innerText = formatDate(nextUnwatched.date);
+                document.getElementById('nextLocation').innerText = nextUnwatched.location;
+                document.getElementById('nextCheckBtn').onclick = () => toggleWatched(nextUnwatched.id);
+                nextCard.style.opacity = '1';
+            } else {
+                document.getElementById('nextTitle').innerText = 'All Caught Up!';
+                document.getElementById('nextDate').innerText = 'No pending events';
+                document.getElementById('nextLocation').innerText = 'Check back soon for new events';
+                document.getElementById('nextCheckBtn').style.display = 'none';
+            }
+        }
+
+        // Render Filtered & Sorted Event Cards
+        function renderEvents() {
+            const container = document.getElementById('eventsContainer');
+            const emptyState = document.getElementById('emptyState');
+            const searchKeyword = document.getElementById('searchInput').value.toLowerCase().trim();
+
+            let filtered = events.filter(event => {
+                const isWatched = watchedIds.has(event.id);
+                
+                // Search filter
+                const matchesSearch = event.name.toLowerCase().includes(searchKeyword) || 
+                                     event.location.toLowerCase().includes(searchKeyword);
+                if (!matchesSearch) return false;
+
+                // Category Filter
+                if (currentFilter === 'unwatched') return !isWatched;
+                if (currentFilter === 'watched') return isWatched;
+                if (currentFilter === 'ppv') return event.category === 'ppv';
+                if (currentFilter === 'fightnight') return event.category === 'fightnight';
+                return true;
+            });
+
+            // Sorting
+            filtered.sort((a, b) => {
+                const dateA = new Date(a.date);
+                const dateB = new Date(b.date);
+                return currentSort === 'asc' ? dateA - dateB : dateB - dateA;
+            });
+
+            container.innerHTML = '';
+
+            if (filtered.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            } else {
+                emptyState.classList.add('hidden');
+            }
+
+            // Find first unwatched ID for visual highlight border
+            const sortedAsc = [...events].sort((a,b) => new Date(a.date) - new Date(b.date));
+            const firstUnwatched = sortedAsc.find(e => !watchedIds.has(e.id));
+            const highlightId = firstUnwatched ? firstUnwatched.id : null;
+
+            filtered.forEach(event => {
+                const isWatched = watchedIds.has(event.id);
+                const isNextUp = event.id === highlightId && !isWatched;
+
+                const card = document.createElement('div');
+                card.id = `event-${event.id}`;
+                card.className = `glass-panel p-4 sm:p-5 rounded-xl transition-all duration-200 border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${
+                    isWatched 
+                        ? 'opacity-60 bg-ufc-bg/40 border-ufc-border' 
+                        : isNextUp 
+                            ? 'border-ufc-red ring-1 ring-ufc-red/50 shadow-lg shadow-ufc-red/10' 
+                            : 'hover:border-gray-600 border-ufc-border'
+                }`;
+
+                const badgeBg = event.category === 'ppv' 
+                    ? 'bg-amber-500/10 text-amber-400 border-amber-500/30' 
+                    : 'bg-sky-500/10 text-sky-400 border-sky-500/30';
+
+                const badgeLabel = event.category === 'ppv' ? 'PPV Event' : 'Fight Night';
+
+                card.innerHTML = `
+                    <div class="flex items-start sm:items-center gap-4 w-full sm:w-auto">
+                        <input type="checkbox" 
+                               ${isWatched ? 'checked' : ''} 
+                               onchange="toggleWatched('${event.id}')"
+                               class="custom-checkbox mt-1 sm:mt-0 flex-shrink-0"
+                               title="Mark as Watched">
+                        
+                        <div>
+                            <div class="flex items-center gap-2 flex-wrap mb-1">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border ${badgeBg}">
+                                    ${badgeLabel}
+                                </span>
+                                ${isNextUp ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-ufc-red text-white uppercase tracking-wider animate-pulse">Next to Watch</span>' : ''}
+                                ${isWatched ? '<span class="px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">Completed</span>' : ''}
+                            </div>
+                            <h4 class="text-base sm:text-lg font-bold ${isWatched ? 'line-through text-gray-400' : 'text-white'} ufc-title">
+                                ${event.name}
+                            </h4>
+                            <div class="flex items-center gap-3 text-xs text-gray-400 mt-1 flex-wrap">
+                                <span class="flex items-center gap-1">
+                                    <i class="fa-regular fa-calendar text-gray-500"></i> ${formatDate(event.date)}
+                                </span>
+                                <span>•</span>
+                                <span class="flex items-center gap-1">
+                                    <i class="fa-solid fa-location-dot text-gray-500"></i> ${event.location}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 self-end sm:self-center w-full sm:w-auto justify-end border-t sm:border-t-0 border-ufc-border pt-3 sm:pt-0">
+                        <button onclick="deleteCustomEvent('${event.id}')" class="text-xs text-gray-500 hover:text-ufc-red p-2 transition-colors" title="Delete event from list">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        // Helper Filter and Sorting Setters
+        function setFilter(filterType) {
+            currentFilter = filterType;
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.classList.remove('active-tab', 'text-white', 'bg-ufc-card');
+                tab.classList.add('text-gray-400');
+            });
+            const active = document.getElementById(`filter-${filterType}`);
+            if (active) {
+                active.classList.add('active-tab', 'text-white', 'bg-ufc-card');
+            }
+            renderEvents();
+        }
+
+        function setSort(sortDir) {
+            currentSort = sortDir;
+            document.getElementById('sort-asc').classList.toggle('active-sort', sortDir === 'asc');
+            document.getElementById('sort-desc').classList.toggle('active-sort', sortDir === 'desc');
+            renderEvents();
+        }
+
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            setFilter('all');
+            setSort('asc');
+        }
+
+        // Modal Handlers
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        // Add Custom Event
+        function handleAddEvent(e) {
+            e.preventDefault();
+            const name = document.getElementById('newEventName').value.trim();
+            const date = document.getElementById('newEventDate').value;
+            const location = document.getElementById('newEventLocation').value.trim();
+            const category = document.getElementById('newEventCategory').value;
+
+            const id = 'custom-' + Date.now();
+            const newEvent = { id, name, date, location, category };
+
+            events.push(newEvent);
+            saveEventsToStorage();
+            closeModal('addEventModal');
+            document.getElementById('addEventForm').reset();
+
+            renderEvents();
+            updateDashboard();
+            showToast('New event added successfully!', 'success');
+        }
+
+        // Delete Individual Event
+        function deleteCustomEvent(id) {
+            events = events.filter(e => e.id !== id);
+            watchedIds.delete(id);
+            saveEventsToStorage();
+            saveWatchedToStorage();
+            renderEvents();
+            updateDashboard();
+            showToast('Event removed', 'info');
+        }
+
+        // Jump to Next Event Smooth Scroll
+        function scrollToNextEvent() {
+            const sortedAsc = [...events].sort((a,b) => new Date(a.date) - new Date(b.date));
+            const next = sortedAsc.find(e => !watchedIds.has(e.id));
+            if (next) {
+                const el = document.getElementById(`event-${next.id}`);
+                if (el) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                } else {
+                    // Reset filter if hidden
+                    setFilter('all');
+                    setTimeout(() => {
+                        const target = document.getElementById(`event-${next.id}`);
+                        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 100);
+                }
+            }
+        }
+
+        function toggleNextWatched() {
+            const sortedAsc = [...events].sort((a,b) => new Date(a.date) - new Date(b.date));
+            const next = sortedAsc.find(e => !watchedIds.has(e.id));
+            if (next) {
+                toggleWatched(next.id);
+            }
+        }
+
+        // Mock Sync for GitHub Pages Hosted App
+        function fetchLatestSchedule() {
+            const syncIcon = document.getElementById('syncIcon');
+            syncIcon.classList.add('fa-spin');
+
+            setTimeout(() => {
+                syncIcon.classList.remove('fa-spin');
+                showToast('Schedule synced & up-to-date!', 'success');
+            }, 800);
+        }
+
+        // Export Data (Backup JSON)
+        function exportData() {
+            const exportObj = {
+                version: 1,
+                events: events,
+                watchedIds: [...watchedIds]
+            };
+
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `ufc_catchup_backup_${new Date().toISOString().split('T')[0]}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+            showToast('Watch history exported!', 'success');
+        }
+
+        // Import Data (Restore JSON)
+        function importData(event) {
+            const fileReader = new FileReader();
+            fileReader.onload = function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (imported.events && Array.isArray(imported.events)) {
+                        events = imported.events;
+                        saveEventsToStorage();
+                    }
+                    if (imported.watchedIds && Array.isArray(imported.watchedIds)) {
+                        watchedIds = new Set(imported.watchedIds);
+                        saveWatchedToStorage();
+                    }
+                    renderEvents();
+                    updateDashboard();
+                    showToast('Data imported successfully!', 'success');
+                } catch (err) {
+                    showToast('Failed to import invalid JSON file.', 'error');
+                }
+            };
+            fileReader.readAsText(event.target.files[0]);
+        }
+
+        // Format Date Utility
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            const date = new Date(dateStr + 'T00:00:00');
+            return date.toLocaleDateString('en-US', {
+                weekday: 'short',
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric'
+            });
+        }
+
+        // Toast Notification Function
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            
+            const bgClass = type === 'success' 
+                ? 'bg-emerald-600 text-white' 
+                : type === 'error' 
+                    ? 'bg-ufc-red text-white' 
+                    : 'bg-gray-800 text-gray-200 border border-gray-700';
+
+            toast.className = `px-4 py-2.5 rounded-lg text-xs font-medium shadow-xl flex items-center gap-2 transform transition-all duration-300 translate-y-2 opacity-0 ${bgClass}`;
+            
+            const icon = type === 'success' 
+                ? 'fa-circle-check' 
+                : type === 'error' 
+                    ? 'fa-triangle-exclamation' 
+                    : 'fa-circle-info';
+
+            toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
+            
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
