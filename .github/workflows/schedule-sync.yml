@@ -1,0 +1,33 @@
+name: Automatic UFC Schedule Update
+
+on:
+  schedule:
+    # Runs automatically every Monday at 08:00 UTC
+    - cron: '0 8 * * 1'
+  workflow_dispatch: # Allows you to manually trigger updates anytime from GitHub
+
+jobs:
+  update-schedule:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Required so the action can save updated schedule files back to your repo
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Run schedule sync script
+        run: python update_schedule.py
+
+      - name: Commit and push changes if schedule updated
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add events.json
+          git diff-index --quiet HEAD || (git commit -m "Auto-update UFC events.json schedule [skip ci]" && git 
+          push)
