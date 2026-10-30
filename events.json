@@ -1,14 +1,14 @@
 [
   {
-    "id": "ufc-310",
-    "title": "UFC 310: Main Event",
-    "date": "2026-12-06",
+    "id": "ufc-sample-1",
+    "title": "UFC Main Event",
+    "date": "2026-06-01",
     "type": "ppv"
   },
   {
-    "id": "ufc-fn-snyder",
+    "id": "ufc-sample-2",
     "title": "UFC Fight Night",
-    "date": "2026-12-13",
+    "date": "2026-06-08",
     "type": "fn"
   }
 ]
