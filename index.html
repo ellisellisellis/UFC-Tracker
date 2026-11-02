@@ -1,221 +1,111 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UFC Spoiler-Free Catch-Up Tracker</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        octagon: {
-                            900: '#0B0F19',
-                            800: '#111827',
-                            700: '#1F2937',
-                            600: '#374151',
-                            accent: '#DC2626', // UFC Red
-                            gold: '#F59E0B'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body class="bg-octagon-900 text-gray-100 min-h-screen font-sans selection:bg-octagon-accent selection:text-white">
+<html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>UFC Catch-Up</title>
+<style>
+:root{--bg:#14110f;--card:#1e1a17;--line:#332d28;--text:#f2ede6;--dim:#9a9086;--red:#d6281f;--ok:#5fb37c}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.4 system-ui,-apple-system,sans-serif;padding:env(safe-area-inset-top) 0 40px}
+main{max-width:640px;margin:0 auto;padding:16px}
+h1{font:800 28px/1.1 "Arial Narrow",Impact,system-ui,sans-serif;letter-spacing:.01em;margin:8px 0 2px}
+.sub{color:var(--dim);font-size:14px;margin:0 0 16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:12px}
+.big{font:800 54px/1 "Arial Narrow",Impact,system-ui,sans-serif;color:var(--red)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.bar{height:8px;background:var(--bg);border-radius:4px;overflow:hidden;margin-top:10px}.bar i{display:block;height:100%;background:var(--ok);width:0;transition:width .3s}
+button,select,input{font:inherit;color:var(--text);background:#2a2420;border:1px solid var(--line);border-radius:8px;padding:8px 12px}
+button{cursor:pointer}button.pri{background:var(--red);border-color:var(--red);font-weight:700}
+button.on{background:var(--text);color:var(--bg);border-color:var(--text)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+.ev{display:flex;align-items:center;gap:12px;padding:12px 14px}
+.ev.done{opacity:.55}.ev.done .t{text-decoration:line-through}
+.chk{width:40px;height:40px;padding:0;font-size:20px;flex:none}.ev.done .chk{background:var(--ok);color:#10201a;border-color:var(--ok)}
+.t{font-weight:700}.m{color:var(--dim);font-size:13px}
+.ppv{color:#e8b04a}.up{font-style:italic}
+details summary{cursor:pointer;color:var(--dim)}
+#msg{color:var(--dim);text-align:center;padding:24px 8px}
+</style></head><body><main>
+<h1>UFC catch-up</h1>
+<p class="sub">Only event names and dates. No fighters, no results.</p>
 
-    <!-- Top Header Bar -->
-    <header class="bg-octagon-800 border-b border-octagon-700 sticky top-0 z-30 shadow-md">
-        <div class="max-w-4xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <div class="flex items-center gap-3">
-                <div class="bg-octagon-accent text-white p-2.5 rounded-xl font-black text-xl tracking-wider shadow-lg flex items-center justify-center w-12 h-12">
-                    UFC
-                </div>
-                <div>
-                    <h1 class="text-xl font-black tracking-wide uppercase text-white flex items-center gap-2">
-                        Catch-Up Tracker <span class="text-xs bg-octagon-700 text-gray-300 px-2 py-0.5 rounded-full border border-octagon-600">Spoiler-Free</span>
-                    </h1>
-                    <p class="text-xs text-gray-400">Watch at your own pace without results ruined.</p>
-                </div>
-            </div>
-            <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-                <button onclick="openAddModal()" class="bg-octagon-700 hover:bg-octagon-600 text-gray-200 px-3 py-2 rounded-lg text-xs font-semibold border border-octagon-600 transition flex items-center gap-1.5">
-                    <i class="fa-solid fa-plus text-octagon-accent"></i> Add Event
-                </button>
-                <button onclick="exportData()" class="bg-octagon-700 hover:bg-octagon-600 text-gray-200 px-3 py-2 rounded-lg text-xs font-semibold border border-octagon-600 transition flex items-center gap-1.5" title="Export Backup">
-                    <i class="fa-solid fa-download"></i> Export
-                </button>
-                <label class="bg-octagon-700 hover:bg-octagon-600 text-gray-200 px-3 py-2 rounded-lg text-xs font-semibold border border-octagon-600 transition flex items-center gap-1.5 cursor-pointer" title="Import Backup">
-                    <i class="fa-solid fa-upload"></i> Import
-                    <input type="file" id="importFile" class="hidden" onchange="importData(event)">
-                </label>
-            </div>
-        </div>
-    </header>
+<div class="card"><div class="big" id="behind">0</div>
+<div>events behind you</div>
+<div class="m"><span id="watched">0</span> watched of <span id="total">0</span> past events</div>
+<div class="bar"><i id="bar"></i></div></div>
 
-    <!-- Main Container -->
-    <main class="max-w-4xl mx-auto px-4 py-6 space-y-6">
+<div class="card" id="next" hidden>
+<div class="m">Watch next · <span id="nextDate"></span></div>
+<div class="t" id="nextTitle" style="font-size:20px;margin:4px 0 10px"></div>
+<button class="pri" id="nextBtn">Mark as watched</button></div>
 
-        <!-- Dashboard Progress Banner -->
-        <section class="bg-gradient-to-br from-octagon-800 to-octagon-700 border border-octagon-600 rounded-2xl p-5 shadow-xl relative overflow-hidden">
-            <div class="absolute -right-6 -bottom-6 text-octagon-700 opacity-20 pointer-events-none text-9xl font-black">
-                <i class="fa-solid fa-shield-halved"></i>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 relative z-10">
-                <div class="bg-octagon-900/60 p-4 rounded-xl border border-octagon-700/50 backdrop-blur-sm">
-                    <span class="text-xs text-gray-400 uppercase font-bold tracking-wider block mb-1">Events Behind</span>
-                    <span id="stat-behind" class="text-3xl font-black text-octagon-accent">0</span>
-                    <span class="text-xs text-gray-400 ml-1">to watch</span>
-                </div>
-                <div class="bg-octagon-900/60 p-4 rounded-xl border border-octagon-700/50 backdrop-blur-sm">
-                    <span class="text-xs text-gray-400 uppercase font-bold tracking-wider block mb-1">Watched Events</span>
-                    <span id="stat-watched" class="text-3xl font-black text-emerald-400">0</span>
-                    <span class="text-xs text-gray-400 ml-1">completed</span>
-                </div>
-                <div class="bg-octagon-900/60 p-4 rounded-xl border border-octagon-700/50 backdrop-blur-sm">
-                    <span class="text-xs text-gray-400 uppercase font-bold tracking-wider block mb-1">Total Schedule</span>
-                    <span id="stat-total" class="text-3xl font-black text-white">0</span>
-                    <span class="text-xs text-gray-400 ml-1">events loaded</span>
-                </div>
-            </div>
+<div class="card"><details><summary>Where are you in the catch-up?</summary>
+<p class="m">Pick the date of the last event you've seen. Everything on or before it is marked watched.</p>
+<div class="row"><input type="date" id="cu"><button id="cuBtn">Mark as watched</button></div></details>
+<details style="margin-top:10px"><summary>Add event, backup</summary>
+<div class="row" style="margin-top:10px"><input id="ct" placeholder="Event title"><input type="date" id="cd"><button id="ca">Add</button></div>
+<div class="row" style="margin-top:10px"><button id="ex">Export backup</button>
+<label><button onclick="this.nextElementSibling.click()">Import backup</button><input type="file" id="im" hidden accept=".json"></label></div></details></div>
 
-            <!-- Progress Bar -->
-            <div class="space-y-2 relative z-10">
-                <div class="flex justify-between text-xs font-semibold text-gray-300">
-                    <span>Overall Catch-Up Progress</span>
-                    <span id="progress-percent">0%</span>
-                </div>
-                <div class="w-full bg-octagon-900 h-3 rounded-full overflow-hidden p-0.5 border border-octagon-700">
-                    <div id="progress-bar" class="bg-gradient-to-r from-red-600 to-emerald-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
-                </div>
-            </div>
-        </section>
+<div class="row" id="filters" style="margin-bottom:12px"></div>
+<div id="list"></div><div id="msg" hidden></div>
+</main>
+<script>
+const ESPN='https://site.api.espn.com/apis/site/v2/sports/mma/ufc/scoreboard';
+const $=s=>document.querySelector(s);
+const load=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}};
+const save=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let base=[],watched=load('ufc_watched_events',{}),custom=load('ufc_custom_events',[]),filter='all',desc=false;
+const today=()=>new Date().toISOString().slice(0,10);
 
-        <!-- Watch Next Focus Card -->
-        <section id="next-up-section" class="bg-octagon-800 border-2 border-octagon-accent/50 rounded-2xl p-5 shadow-lg hidden">
-            <div class="flex items-center justify-between mb-3">
-                <span class="bg-octagon-accent/20 text-octagon-accent border border-octagon-accent/30 text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider flex items-center gap-1.5">
-                    <i class="fa-solid fa-play"></i> Watch Next
-                </span>
-                <span id="next-date" class="text-xs text-gray-400"></span>
-            </div>
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <div>
-                    <h2 id="next-title" class="text-xl font-bold text-white">Loading next event...</h2>
-                    <p class="text-xs text-gray-400 mt-0.5">Check this off once you have finished watching it on catch up!</p>
-                </div>
-                <button id="next-action-btn" onclick="" class="w-full sm:w-auto bg-octagon-accent hover:bg-red-700 text-white font-bold px-6 py-2.5 rounded-xl transition shadow-lg text-sm flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-check"></i> Mark Watched
-                </button>
-            </div>
-        </section>
-
-        <!-- Filter Controls -->
-        <section class="flex flex-col sm:flex-row justify-between items-center gap-4 bg-octagon-800 p-4 rounded-2xl border border-octagon-700">
-            <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
-                <button onclick="setFilter('all')" id="filter-all" class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-bold transition bg-octagon-accent text-white">All</button>
-                <button onclick="setFilter('unwatched')" id="filter-unwatched" class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-bold transition bg-octagon-700 text-gray-300 hover:bg-octagon-600">Unwatched</button>
-                <button onclick="setFilter('watched')" id="filter-watched" class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-bold transition bg-octagon-700 text-gray-300 hover:bg-octagon-600">Watched</button>
-                <button onclick="setFilter('ppv')" id="filter-ppv" class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-bold transition bg-octagon-700 text-gray-300 hover:bg-octagon-600">PPV Only</button>
-                <button onclick="setFilter('fn')" id="filter-fn" class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-bold transition bg-octagon-700 text-gray-300 hover:bg-octagon-600">Fight Nights</button>
-            </div>
-            <div class="flex items-center gap-2 w-full sm:w-auto">
-                <select id="sort-order" onchange="changeSort(this.value)" class="bg-octagon-900 border border-octagon-700 text-gray-200 text-xs rounded-lg px-3 py-2 outline-none focus:border-octagon-accent w-full sm:w-auto">
-                    <option value="asc">Chronological (Oldest First)</option>
-                    <option value="desc">Recent First</option>
-                </select>
-            </div>
-        </section>
-
-        <!-- Events List -->
-        <section class="space-y-3" id="events-container">
-            <!-- Dynamically populated -->
-        </section>
-
-    </main>
-
-    <!-- Add Event Modal -->
-    <div id="add-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-octagon-800 border border-octagon-700 rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4">
-            <div class="flex justify-between items-center">
-                <h3 class="text-lg font-bold text-white flex items-center gap-2">
-                    <i class="fa-solid fa-calendar-plus text-octagon-accent"></i> Add Custom UFC Event
-                </h3>
-                <button onclick="closeAddModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <form onsubmit="handleCustomEventAdd(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-semibold text-gray-300 uppercase mb-1">Event Title</label>
-                    <input type="text" id="custom-title" required placeholder="e.g. UFC Main Event" class="w-full bg-octagon-900 border border-octagon-700 rounded-xl px-3 py-2.5 text-sm text-white focus:border-octagon-accent outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-300 uppercase mb-1">Event Date</label>
-                    <input type="date" id="custom-date" required class="w-full bg-octagon-900 border border-octagon-700 rounded-xl px-3 py-2.5 text-sm text-white focus:border-octagon-accent outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-300 uppercase mb-1">Event Type</label>
-                    <select id="custom-type" class="w-full bg-octagon-900 border border-octagon-700 rounded-xl px-3 py-2.5 text-sm text-white focus:border-octagon-accent outline-none">
-                        <option value="ppv">PPV Main Event</option>
-                        <option value="fn">Fight Night</option>
-                    </select>
-                </div>
-                <div class="flex justify-end gap-2 pt-2">
-                    <button type="button" onclick="closeAddModal()" class="bg-octagon-700 hover:bg-octagon-600 text-gray-300 px-4 py-2 rounded-xl text-xs font-bold">Cancel</button>
-                    <button type="submit" class="bg-octagon-accent hover:bg-red-700 text-white px-5 py-2 rounded-xl text-xs font-bold shadow-lg">Save Event</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- App Logic Script -->
-    <script>
-        let EVENTS = [];
-        let watchedStatus = JSON.parse(localStorage.getItem('ufc_watched_events')) || {};
-        let customEvents = JSON.parse(localStorage.getItem('ufc_custom_events')) || [];
-        let currentFilter = 'all';
-        let currentSort = 'asc';
-
-        async function loadEventsData() {
-            // Built-in fallback schedule so the app never displays zero events
-            let baseEvents = [
-                { id: "ufc-318", title: "UFC 318: Main Event", date: "2026-08-15", type: "ppv" },
-                { id: "ufc-fn-aug", title: "UFC Fight Night", date: "2026-08-22", type: "fn" },
-                { id: "ufc-319", title: "UFC 319: Main Event", date: "2026-09-12", type: "ppv" },
-                { id: "ufc-fn-sep", title: "UFC Fight Night", date: "2026-09-26", type: "fn" },
-                { id: "ufc-320", title: "UFC 320: Main Event", date: "2026-10-10", type: "ppv" },
-                { id: "ufc-fn-oct", title: "UFC Fight Night", date: "2026-10-24", type: "fn" },
-                { id: "ufc-321", title: "UFC 321: Main Event", date: "2026-11-07", type: "ppv" },
-                { id: "ufc-fn-nov", title: "UFC Fight Night", date: "2026-11-21", type: "fn" }
-            ];
-
-            try {
-                const res = await fetch('events.json?' + new Date().getTime());
-                if (res.ok) {
-                    const fetched = await res.json();
-                    if (fetched && fetched.length > 0) {
-                        baseEvents = fetched;
-                    }
-                }
-            } catch (err) {
-                console.log('Using built-in schedule fallback');
-            }
-
-            EVENTS = [...baseEvents, ...customEvents];
-            renderApp();
-        }
-
-        function toggleWatch(id) {
-            watchedStatus[id] = !watchedStatus[id];
-            localStorage.setItem('ufc_watched_events', JSON.stringify(watchedStatus));
-            renderApp();
-        }
-
-        function
-            
+// Strips fighter names: numbered events keep "UFC 320", everything else becomes "UFC Fight Night"
+function clean(e){
+  const m=/UFC\s+(\d{3})\b/i.exec(e.name||'');
+  const d=new Date(new Date(e.date).getTime()-6*36e5).toISOString().slice(0,10);
+  return{id:String(e.id),title:m?'UFC '+m[1]:'UFC Fight Night',date:d,type:m?'ppv':'fn'};
+}
+async function loadBase(){
+  try{const r=await fetch('events.json?'+Date.now());
+    if(r.ok){const j=await r.json();if(Array.isArray(j)&&j.length)return j;}}catch(e){}
+  try{const y=new Date().getFullYear(),end=new Date(Date.now()+180*864e5).toISOString().slice(0,10).replace(/-/g,'');
+    const r=await fetch(`${ESPN}?dates=${y-1}0101-${end}&limit=500`);const j=await r.json();
+    return (j.events||[]).map(clean);}catch(e){}
+  return [];
+}
+const all=()=>[...base,...custom].sort((a,b)=>a.date.localeCompare(b.date)||a.id.localeCompare(b.id));
+function render(){
+  const ev=all(),t=today(),past=ev.filter(e=>e.date<=t);
+  const w=past.filter(e=>watched[e.id]).length,behind=past.length-w;
+  $('#behind').textContent=behind;$('#watched').textContent=w;$('#total').textContent=past.length;
+  $('#bar').style.width=(past.length?Math.round(w/past.length*100):0)+'%';
+  const nx=past.find(e=>!watched[e.id]);$('#next').hidden=!nx;
+  if(nx){$('#nextTitle').textContent=nx.title;$('#nextDate').textContent=nx.date;$('#nextBtn').onclick=()=>toggle(nx.id);}
+  const F={all:'All',unwatched:'To watch',watched:'Watched',ppv:'Numbered',fn:'Fight Nights'};
+  $('#filters').innerHTML=Object.entries(F).map(([k,v])=>`<button data-f="${k}" class="${k===filter?'on':''}">${v}</button>`).join('')+`<button data-s>${desc?'Newest first':'Oldest first'}</button>`;
+  let l=ev.filter(e=>filter==='unwatched'?!watched[e.id]&&e.date<=t:filter==='watched'?watched[e.id]:filter==='ppv'?e.type==='ppv':filter==='fn'?e.type==='fn':true);
+  if(desc)l.reverse();
+  $('#list').innerHTML=l.map(e=>{const up=e.date>t,d=!!watched[e.id];
+    return `<div class="card ev ${d?'done':''}"><button class="chk" data-id="${esc(e.id)}" ${up?'disabled':''} aria-label="Toggle watched">${d?'✓':''}</button>
+    <div><div class="t ${e.type==='ppv'?'ppv':''}">${esc(e.title)}</div><div class="m ${up?'up':''}">${esc(e.date)}${up?' · upcoming':''}</div></div></div>`}).join('');
+  const msg=$('#msg');msg.hidden=!!l.length;
+  msg.textContent=ev.length?'Nothing matches this filter.':"Couldn't load the schedule. Check your connection, or add events under “Add event, backup”.";
+}
+function toggle(id){watched[id]=!watched[id];save('ufc_watched_events',watched);render();}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.id)toggle(b.dataset.id);
+  else if(b.dataset.f){filter=b.dataset.f;render();}
+  else if('s' in b.dataset){desc=!desc;render();}
+});
+$('#cuBtn').onclick=()=>{const d=$('#cu').value;if(!d)return;
+  all().forEach(e=>{if(e.date<=d)watched[e.id]=true});save('ufc_watched_events',watched);render();};
+$('#ca').onclick=()=>{const t=$('#ct').value.trim(),d=$('#cd').value;if(!t||!d)return;
+  custom.push({id:'c'+Date.now(),title:t,date:d,type:'fn'});save('ufc_custom_events',custom);$('#ct').value='';render();};
+$('#ex').onclick=()=>{const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([JSON.stringify({watched,custom})],{type:'application/json'}));
+  a.download='ufc-backup.json';a.click();};
+$('#im').onchange=async ev=>{try{const j=JSON.parse(await ev.target.files[0].text());
+  watched=j.watched||{};custom=j.custom||[];save('ufc_watched_events',watched);save('ufc_custom_events',custom);render();}
+  catch(e){alert('That file is not a valid backup.');}};
+render();
+loadBase().then(l=>{base=l;render();});
+</script></body></html>
