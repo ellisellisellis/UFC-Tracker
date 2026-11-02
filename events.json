@@ -1,1 +1,644 @@
-[]
+[
+ {
+  "id": "600051441",
+  "title": "UFC Fight Night",
+  "date": "2025-01-11",
+  "type": "fn"
+ },
+ {
+  "id": "600051442",
+  "title": "UFC 311",
+  "date": "2025-01-18",
+  "type": "ppv"
+ },
+ {
+  "id": "600051443",
+  "title": "UFC Fight Night",
+  "date": "2025-02-01",
+  "type": "fn"
+ },
+ {
+  "id": "600050481",
+  "title": "UFC 312",
+  "date": "2025-02-08",
+  "type": "ppv"
+ },
+ {
+  "id": "600051444",
+  "title": "UFC Fight Night",
+  "date": "2025-02-15",
+  "type": "fn"
+ },
+ {
+  "id": "600051445",
+  "title": "UFC Fight Night",
+  "date": "2025-02-22",
+  "type": "fn"
+ },
+ {
+  "id": "600051446",
+  "title": "UFC Fight Night",
+  "date": "2025-03-01",
+  "type": "fn"
+ },
+ {
+  "id": "600051447",
+  "title": "UFC 313",
+  "date": "2025-03-08",
+  "type": "ppv"
+ },
+ {
+  "id": "600051448",
+  "title": "UFC Fight Night",
+  "date": "2025-03-15",
+  "type": "fn"
+ },
+ {
+  "id": "600051194",
+  "title": "UFC Fight Night",
+  "date": "2025-03-22",
+  "type": "fn"
+ },
+ {
+  "id": "600051449",
+  "title": "UFC Fight Night",
+  "date": "2025-03-29",
+  "type": "fn"
+ },
+ {
+  "id": "600053226",
+  "title": "UFC Fight Night",
+  "date": "2025-04-05",
+  "type": "fn"
+ },
+ {
+  "id": "600053165",
+  "title": "UFC 314",
+  "date": "2025-04-12",
+  "type": "ppv"
+ },
+ {
+  "id": "600053312",
+  "title": "UFC Fight Night",
+  "date": "2025-04-26",
+  "type": "fn"
+ },
+ {
+  "id": "600053455",
+  "title": "UFC Fight Night",
+  "date": "2025-05-03",
+  "type": "fn"
+ },
+ {
+  "id": "600053073",
+  "title": "UFC 315",
+  "date": "2025-05-10",
+  "type": "ppv"
+ },
+ {
+  "id": "600053676",
+  "title": "UFC Fight Night",
+  "date": "2025-05-17",
+  "type": "fn"
+ },
+ {
+  "id": "600053606",
+  "title": "UFC Fight Night",
+  "date": "2025-05-31",
+  "type": "fn"
+ },
+ {
+  "id": "600053672",
+  "title": "UFC 316",
+  "date": "2025-06-07",
+  "type": "ppv"
+ },
+ {
+  "id": "600053732",
+  "title": "UFC Fight Night",
+  "date": "2025-06-14",
+  "type": "fn"
+ },
+ {
+  "id": "600053795",
+  "title": "UFC Fight Night",
+  "date": "2025-06-21",
+  "type": "fn"
+ },
+ {
+  "id": "600053168",
+  "title": "UFC 317",
+  "date": "2025-06-28",
+  "type": "ppv"
+ },
+ {
+  "id": "600054061",
+  "title": "UFC Fight Night",
+  "date": "2025-07-12",
+  "type": "fn"
+ },
+ {
+  "id": "600053891",
+  "title": "UFC 318",
+  "date": "2025-07-19",
+  "type": "ppv"
+ },
+ {
+  "id": "600053545",
+  "title": "UFC Fight Night",
+  "date": "2025-07-26",
+  "type": "fn"
+ },
+ {
+  "id": "600054244",
+  "title": "UFC Fight Night",
+  "date": "2025-08-02",
+  "type": "fn"
+ },
+ {
+  "id": "600054396",
+  "title": "UFC Fight Night",
+  "date": "2025-08-09",
+  "type": "fn"
+ },
+ {
+  "id": "600055020",
+  "title": "UFC Fight Night",
+  "date": "2025-08-12",
+  "type": "fn"
+ },
+ {
+  "id": "600054045",
+  "title": "UFC 319",
+  "date": "2025-08-16",
+  "type": "ppv"
+ },
+ {
+  "id": "600055021",
+  "title": "UFC Fight Night",
+  "date": "2025-08-19",
+  "type": "fn"
+ },
+ {
+  "id": "600054141",
+  "title": "UFC Fight Night",
+  "date": "2025-08-23",
+  "type": "fn"
+ },
+ {
+  "id": "600055005",
+  "title": "UFC Fight Night",
+  "date": "2025-08-26",
+  "type": "fn"
+ },
+ {
+  "id": "600055006",
+  "title": "UFC Fight Night",
+  "date": "2025-09-02",
+  "type": "fn"
+ },
+ {
+  "id": "600054419",
+  "title": "UFC Fight Night",
+  "date": "2025-09-06",
+  "type": "fn"
+ },
+ {
+  "id": "600055007",
+  "title": "UFC Fight Night",
+  "date": "2025-09-09",
+  "type": "fn"
+ },
+ {
+  "id": "600053664",
+  "title": "UFC Fight Night",
+  "date": "2025-09-13",
+  "type": "fn"
+ },
+ {
+  "id": "600055031",
+  "title": "UFC Fight Night",
+  "date": "2025-09-16",
+  "type": "fn"
+ },
+ {
+  "id": "600055032",
+  "title": "UFC Fight Night",
+  "date": "2025-09-23",
+  "type": "fn"
+ },
+ {
+  "id": "600055226",
+  "title": "UFC Fight Night",
+  "date": "2025-09-27",
+  "type": "fn"
+ },
+ {
+  "id": "600055033",
+  "title": "UFC Fight Night",
+  "date": "2025-09-30",
+  "type": "fn"
+ },
+ {
+  "id": "600054473",
+  "title": "UFC 320",
+  "date": "2025-10-04",
+  "type": "ppv"
+ },
+ {
+  "id": "600055054",
+  "title": "UFC Fight Night",
+  "date": "2025-10-07",
+  "type": "fn"
+ },
+ {
+  "id": "600055376",
+  "title": "UFC Fight Night",
+  "date": "2025-10-11",
+  "type": "fn"
+ },
+ {
+  "id": "600055055",
+  "title": "UFC Fight Night",
+  "date": "2025-10-14",
+  "type": "fn"
+ },
+ {
+  "id": "600054482",
+  "title": "UFC Fight Night",
+  "date": "2025-10-18",
+  "type": "fn"
+ },
+ {
+  "id": "600055085",
+  "title": "UFC 321",
+  "date": "2025-10-25",
+  "type": "ppv"
+ },
+ {
+  "id": "600056045",
+  "title": "UFC Fight Night",
+  "date": "2025-11-01",
+  "type": "fn"
+ },
+ {
+  "id": "600056160",
+  "title": "UFC Fight Night",
+  "date": "2025-11-08",
+  "type": "fn"
+ },
+ {
+  "id": "600055729",
+  "title": "UFC 322",
+  "date": "2025-11-15",
+  "type": "ppv"
+ },
+ {
+  "id": "600055175",
+  "title": "UFC Fight Night",
+  "date": "2025-11-22",
+  "type": "fn"
+ },
+ {
+  "id": "600056375",
+  "title": "UFC 323",
+  "date": "2025-12-06",
+  "type": "ppv"
+ },
+ {
+  "id": "600056266",
+  "title": "UFC Fight Night",
+  "date": "2025-12-13",
+  "type": "fn"
+ },
+ {
+  "id": "600057024",
+  "title": "UFC 324",
+  "date": "2026-01-24",
+  "type": "ppv"
+ },
+ {
+  "id": "600057025",
+  "title": "UFC 325",
+  "date": "2026-01-31",
+  "type": "ppv"
+ },
+ {
+  "id": "600057328",
+  "title": "UFC Fight Night",
+  "date": "2026-02-07",
+  "type": "fn"
+ },
+ {
+  "id": "600057329",
+  "title": "UFC Fight Night",
+  "date": "2026-02-21",
+  "type": "fn"
+ },
+ {
+  "id": "600057330",
+  "title": "UFC Fight Night",
+  "date": "2026-02-28",
+  "type": "fn"
+ },
+ {
+  "id": "600057326",
+  "title": "UFC 326",
+  "date": "2026-03-07",
+  "type": "ppv"
+ },
+ {
+  "id": "600057364",
+  "title": "UFC Fight Night",
+  "date": "2026-03-14",
+  "type": "fn"
+ },
+ {
+  "id": "600057365",
+  "title": "UFC Fight Night",
+  "date": "2026-03-21",
+  "type": "fn"
+ },
+ {
+  "id": "600057366",
+  "title": "UFC Fight Night",
+  "date": "2026-03-28",
+  "type": "fn"
+ },
+ {
+  "id": "600058693",
+  "title": "UFC Fight Night",
+  "date": "2026-04-04",
+  "type": "fn"
+ },
+ {
+  "id": "600058745",
+  "title": "UFC 327",
+  "date": "2026-04-11",
+  "type": "ppv"
+ },
+ {
+  "id": "600058725",
+  "title": "UFC Fight Night",
+  "date": "2026-04-18",
+  "type": "fn"
+ },
+ {
+  "id": "600058746",
+  "title": "UFC Fight Night",
+  "date": "2026-04-25",
+  "type": "fn"
+ },
+ {
+  "id": "600058807",
+  "title": "UFC Fight Night",
+  "date": "2026-05-02",
+  "type": "fn"
+ },
+ {
+  "id": "600058947",
+  "title": "UFC 328",
+  "date": "2026-05-09",
+  "type": "ppv"
+ },
+ {
+  "id": "600058948",
+  "title": "UFC Fight Night",
+  "date": "2026-05-16",
+  "type": "fn"
+ },
+ {
+  "id": "600058517",
+  "title": "UFC Fight Night",
+  "date": "2026-05-30",
+  "type": "fn"
+ },
+ {
+  "id": "600058949",
+  "title": "UFC Fight Night",
+  "date": "2026-06-06",
+  "type": "fn"
+ },
+ {
+  "id": "600058854",
+  "title": "UFC Fight Night",
+  "date": "2026-06-14",
+  "type": "fn"
+ },
+ {
+  "id": "600059467",
+  "title": "UFC Fight Night",
+  "date": "2026-06-20",
+  "type": "fn"
+ },
+ {
+  "id": "600059254",
+  "title": "UFC Fight Night",
+  "date": "2026-06-27",
+  "type": "fn"
+ },
+ {
+  "id": "600059148",
+  "title": "UFC 329",
+  "date": "2026-07-11",
+  "type": "ppv"
+ },
+ {
+  "id": "600059599",
+  "title": "UFC Fight Night",
+  "date": "2026-07-18",
+  "type": "fn"
+ },
+ {
+  "id": "600059667",
+  "title": "UFC Fight Night",
+  "date": "2026-07-25",
+  "type": "fn"
+ },
+ {
+  "id": "600059339",
+  "title": "UFC Fight Night",
+  "date": "2026-08-01",
+  "type": "fn"
+ },
+ {
+  "id": "600060621",
+  "title": "UFC Fight Night",
+  "date": "2026-08-08",
+  "type": "fn"
+ },
+ {
+  "id": "600060732",
+  "title": "UFC Fight Night",
+  "date": "2026-08-11",
+  "type": "fn"
+ },
+ {
+  "id": "600059185",
+  "title": "UFC 330",
+  "date": "2026-08-15",
+  "type": "ppv"
+ },
+ {
+  "id": "600060733",
+  "title": "UFC Fight Night",
+  "date": "2026-08-18",
+  "type": "fn"
+ },
+ {
+  "id": "600060493",
+  "title": "UFC Fight Night",
+  "date": "2026-08-22",
+  "type": "fn"
+ },
+ {
+  "id": "600060734",
+  "title": "UFC Fight Night",
+  "date": "2026-08-25",
+  "type": "fn"
+ },
+ {
+  "id": "600060620",
+  "title": "UFC Fight Night",
+  "date": "2026-08-29",
+  "type": "fn"
+ },
+ {
+  "id": "600060735",
+  "title": "UFC Fight Night",
+  "date": "2026-09-01",
+  "type": "fn"
+ },
+ {
+  "id": "600059993",
+  "title": "UFC Fight Night",
+  "date": "2026-09-05",
+  "type": "fn"
+ },
+ {
+  "id": "600060736",
+  "title": "UFC Fight Night",
+  "date": "2026-09-08",
+  "type": "fn"
+ },
+ {
+  "id": "600060772",
+  "title": "UFC Fight Night",
+  "date": "2026-09-12",
+  "type": "fn"
+ },
+ {
+  "id": "600060737",
+  "title": "UFC Fight Night",
+  "date": "2026-09-15",
+  "type": "fn"
+ },
+ {
+  "id": "600060963",
+  "title": "UFC 331",
+  "date": "2026-09-19",
+  "type": "ppv"
+ },
+ {
+  "id": "600060738",
+  "title": "UFC Fight Night",
+  "date": "2026-09-22",
+  "type": "fn"
+ },
+ {
+  "id": "600061266",
+  "title": "UFC Fight Night",
+  "date": "2026-09-26",
+  "type": "fn"
+ },
+ {
+  "id": "600060739",
+  "title": "UFC Fight Night",
+  "date": "2026-09-29",
+  "type": "fn"
+ },
+ {
+  "id": "600061182",
+  "title": "UFC 332",
+  "date": "2026-10-03",
+  "type": "ppv"
+ },
+ {
+  "id": "600060740",
+  "title": "UFC Fight Night",
+  "date": "2026-10-06",
+  "type": "fn"
+ },
+ {
+  "id": "600061541",
+  "title": "UFC Fight Night",
+  "date": "2026-10-10",
+  "type": "fn"
+ },
+ {
+  "id": "600060741",
+  "title": "UFC Fight Night",
+  "date": "2026-10-13",
+  "type": "fn"
+ },
+ {
+  "id": "600060773",
+  "title": "UFC Fight Night",
+  "date": "2026-10-17",
+  "type": "fn"
+ },
+ {
+  "id": "600061267",
+  "title": "UFC 333",
+  "date": "2026-10-24",
+  "type": "ppv"
+ },
+ {
+  "id": "600061420",
+  "title": "UFC Fight Night",
+  "date": "2026-10-31",
+  "type": "fn"
+ },
+ {
+  "id": "600061268",
+  "title": "UFC Fight Night",
+  "date": "2026-11-07",
+  "type": "fn"
+ },
+ {
+  "id": "600061400",
+  "title": "UFC 334",
+  "date": "2026-11-14",
+  "type": "ppv"
+ },
+ {
+  "id": "600061665",
+  "title": "UFC Fight Night",
+  "date": "2026-11-21",
+  "type": "fn"
+ },
+ {
+  "id": "600061401",
+  "title": "UFC 335",
+  "date": "2026-12-12",
+  "type": "ppv"
+ },
+ {
+  "id": "600062421",
+  "title": "UFC Fight Night",
+  "date": "2027-01-16",
+  "type": "fn"
+ },
+ {
+  "id": "600062191",
+  "title": "UFC 336",
+  "date": "2027-01-30",
+  "type": "ppv"
+ },
+ {
+  "id": "600062420",
+  "title": "UFC Fight Night",
+  "date": "2027-02-06",
+  "type": "fn"
+ }
+]
