@@ -208,5 +208,11 @@
         "title": "UFC 336: Van vs. Kape",
         "date": "2027-01-30",
         "type": "ppv"
+    },
+    {
+        "id": "espn-600062420",
+        "title": "UFC Fight Night: Salkilld vs. Saint Denis",
+        "date": "2027-02-06",
+        "type": "fn"
     }
 ]
