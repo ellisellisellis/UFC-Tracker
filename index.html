@@ -25,7 +25,7 @@ details summary{cursor:pointer;color:var(--dim)}
 #msg{color:var(--dim);text-align:center;padding:24px 8px}
 </style></head><body><main>
 <h1>UFC catch-up</h1>
-<p class="sub">Only event names and dates. No fighters, no results.</p>
+<p class="sub">Event names and dates. No results.</p>
 
 <div class="card"><div class="big" id="behind">0</div>
 <div>events behind you</div>
@@ -57,11 +57,11 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 let base=[],watched=load('ufc_watched_events',{}),custom=load('ufc_custom_events',[]),filter='all',desc=false;
 const today=()=>new Date().toISOString().slice(0,10);
 
-// Strips fighter names: numbered events keep "UFC 320", everything else becomes "UFC Fight Night"
+// Numbered events show as "UFC 320"; Fight Nights keep ESPN's title (main event matchup)
 function clean(e){
   const m=/UFC\s+(\d{3})\b/i.exec(e.name||'');
   const d=new Date(new Date(e.date).getTime()-6*36e5).toISOString().slice(0,10);
-  return{id:String(e.id),title:m?'UFC '+m[1]:'UFC Fight Night',date:d,type:m?'ppv':'fn'};
+  return{id:String(e.id),title:m?'UFC '+m[1]:(e.name||'UFC Fight Night'),date:d,type:m?'ppv':'fn'};
 }
 async function loadBase(){
   try{const r=await fetch('events.json?'+Date.now());

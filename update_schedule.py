@@ -1,4 +1,4 @@
-"""Sync UFC schedule from ESPN into events.json. Titles are stripped of fighter names."""
+"""Sync UFC schedule from ESPN into events.json. Numbered events show as 'UFC 320'; Fight Nights keep ESPN's title."""
 import json, re, sys, urllib.request
 from datetime import datetime, timedelta, timezone
 
@@ -7,7 +7,7 @@ URL = "https://site.api.espn.com/apis/site/v2/sports/mma/ufc/scoreboard?dates={s
 def clean(ev):
     m = re.search(r"UFC\s+(\d{3})\b", ev.get("name", ""), re.I)
     d = datetime.fromisoformat(ev["date"].replace("Z", "+00:00")) - timedelta(hours=6)
-    return {"id": str(ev["id"]), "title": f"UFC {m.group(1)}" if m else "UFC Fight Night",
+    return {"id": str(ev["id"]), "title": f"UFC {m.group(1)}" if m else (ev.get("name") or "UFC Fight Night"),
             "date": d.strftime("%Y-%m-%d"), "type": "ppv" if m else "fn"}
 
 def fetch(s, e):
@@ -16,7 +16,7 @@ def fetch(s, e):
         return json.load(r).get("events", [])
 
 now = datetime.now(timezone.utc)
-start = datetime(now.year - 1, 1, 1, tzinfo=timezone.utc)
+start = datetime(2025, 1, 1, tzinfo=timezone.utc)
 end = now + timedelta(days=180)
 found, errors = {}, 0
 cur = start
