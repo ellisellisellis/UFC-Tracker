@@ -5,10 +5,10 @@ import datetime
 
 FILENAME = "events.json"
 
-def fetch_espn_for_month(year_month):
-    """Fetch UFC events from ESPN for a specific YYYYMM format."""
+def fetch_espn_scoreboard():
+    """Fetch active and upcoming UFC events from ESPN default scoreboard."""
     events_list = []
-    url = f"https://site.api.espn.com/apis/site/v2/sports/mma/ufc/scoreboard?dates={year_month}"
+    url = "https://site.api.espn.com/apis/site/v2/sports/mma/ufc/scoreboard"
     try:
         req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
         with urllib.request.urlopen(req, timeout=10) as response:
@@ -20,7 +20,6 @@ def fetch_espn_for_month(year_month):
                 name = ev.get('name', 'UFC Event')
                 date_str = ev.get('date', '')[:10]
                 
-                # Tag as PPV Main Event or Fight Night
                 ev_type = "ppv" if any(k in name.lower() for k in ["ufc 3", "ufc 4", "ufc 5", "ufc 6", "ufc 7", "ufc 8", "ufc 9"]) or "ppv" in name.lower() else "fn"
                 
                 if event_id and date_str:
@@ -31,7 +30,7 @@ def fetch_espn_for_month(year_month):
                         "type": ev_type
                     })
     except Exception as e:
-        print(f"Note: Could not fetch for {year_month}: {e}")
+        print(f"Note: Could not fetch ESPN scoreboard: {e}")
     
     return events_list
 
@@ -45,23 +44,12 @@ def main():
                 except:
                     existing_events = []
 
-        now = datetime.datetime.now()
-        months_to_check = []
-        
-        # Range -3 to +3: Fetches the last 3 months of events plus upcoming events
-        for i in range(-3, 4):
-            m = (now.month - 1 + i) % 12 + 1
-            y = now.year + (now.month - 1 + i) // 12
-            months_to_check.append(f"{y}{m:02d}")
+        fetched = fetch_espn_scoreboard()
 
-        all_fetched = []
-        for ym in months_to_check:
-            all_fetched.extend(fetch_espn_for_month(ym))
-
-        if all_fetched:
+        if fetched:
             existing_ids = {e['id'] for e in existing_events}
             new_added = 0
-            for ev in all_fetched:
+            for ev in fetched:
                 if ev['id'] not in existing_ids:
                     existing_events.append(ev)
                     new_added += 1
@@ -73,11 +61,11 @@ def main():
                 json.dump(existing_events, f, indent=4)
             print(f"Schedule updated! Added {new_added} new events. Total events: {len(existing_events)}")
         else:
-            print("No new events fetched, keeping existing schedule intact.")
+            print("No new events fetched from API, keeping existing schedule intact.")
             
     except Exception as e:
         print(f"Safe exit from script error: {e}")
 
 if __name__ == "__main__":
-   
+    
     main()
