@@ -1,50 +1,56 @@
 [
-  {
-    "id": "ufc-318",
-    "title": "UFC 318: Main Event",
-    "date": "2026-08-15",
-    "type": "ppv"
-  },
-  {
-    "id": "ufc-fn-aug",
-    "title": "UFC Fight Night",
-    "date": "2026-08-22",
-    "type": "fn"
-  },
-  {
-    "id": "ufc-319",
-    "title": "UFC 319: Main Event",
-    "date": "2026-09-12",
-    "type": "ppv"
-  },
-  {
-    "id": "ufc-fn-sep",
-    "title": "UFC Fight Night",
-    "date": "2026-09-26",
-    "type": "fn"
-  },
-  {
-    "id": "ufc-320",
-    "title": "UFC 320: Main Event",
-    "date": "2026-10-10",
-    "type": "ppv"
-  },
-  {
-    "id": "ufc-fn-oct",
-    "title": "UFC Fight Night",
-    "date": "2026-10-24",
-    "type": "fn"
-  },
-  {
-    "id": "ufc-321",
-    "title": "UFC 321: Main Event",
-    "date": "2026-11-07",
-    "type": "ppv"
-  },
-  {
-    "id": "ufc-fn-nov",
-    "title": "UFC Fight Night",
-    "date": "2026-11-21",
-    "type": "fn"
-  }
+    {
+        "id": "ufc-318",
+        "title": "UFC 318: Main Event",
+        "date": "2026-08-15",
+        "type": "ppv"
+    },
+    {
+        "id": "ufc-fn-aug",
+        "title": "UFC Fight Night",
+        "date": "2026-08-22",
+        "type": "fn"
+    },
+    {
+        "id": "ufc-319",
+        "title": "UFC 319: Main Event",
+        "date": "2026-09-12",
+        "type": "ppv"
+    },
+    {
+        "id": "ufc-fn-sep",
+        "title": "UFC Fight Night",
+        "date": "2026-09-26",
+        "type": "fn"
+    },
+    {
+        "id": "ufc-320",
+        "title": "UFC 320: Main Event",
+        "date": "2026-10-10",
+        "type": "ppv"
+    },
+    {
+        "id": "ufc-fn-oct",
+        "title": "UFC Fight Night",
+        "date": "2026-10-24",
+        "type": "fn"
+    },
+    {
+        "id": "ufc-321",
+        "title": "UFC 321: Main Event",
+        "date": "2026-11-07",
+        "type": "ppv"
+    },
+    {
+        "id": "espn-600061268",
+        "title": "UFC Fight Night: Cortes Acosta vs. Walker",
+        "date": "2026-11-07",
+        "type": "fn"
+    },
+    {
+        "id": "ufc-fn-nov",
+        "title": "UFC Fight Night",
+        "date": "2026-11-21",
+        "type": "fn"
+    }
 ]
